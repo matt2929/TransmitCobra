@@ -70,7 +70,7 @@ public class CobraView extends RelativeLayout {
         for (int y = blockSize * startPoint; y < canvas.getHeight() - (blockSize * (startPoint)); y += blockSize) {
             countY++;
             int countX = 0;
-            for (int x = blockSize * startPoint; x < canvas.getWidth() - (blockSize * (startPoint+1)); x += blockSize) {
+            for (int x = blockSize * startPoint; x < canvas.getWidth() - (blockSize * (startPoint + 1)); x += blockSize) {
                 countX++;
                 Paint color = paints[random.nextInt(4)];
                 canvas.drawRect(x, y, x + blockSize, y + blockSize, color);
