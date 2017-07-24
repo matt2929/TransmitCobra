@@ -4,7 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -18,8 +22,10 @@ public class CobraView extends RelativeLayout {
 
     private Paint colorBlack, colorWhite, colorRed, colorBlue, colorGreen;
     private ArrayList<String> colorList = new ArrayList<>();
-    private Integer blockSize, blockWidth, blockHeight;
+    private Integer blockSize;
     private SaveValues saveValues;
+    int xC = 0;
+    int yC = 0;
 
     public void initialize() {
         colorBlack = new Paint();
@@ -32,7 +38,8 @@ public class CobraView extends RelativeLayout {
         colorGreen.setColor(Color.GREEN);
         colorWhite.setColor(Color.WHITE);
         colorBlack.setColor(Color.BLACK);
-        blockSize = 24;
+        blockSize = 16;
+        setBackgroundColor(Color.WHITE);
     }
 
     public CobraView(Context context) {
@@ -57,62 +64,77 @@ public class CobraView extends RelativeLayout {
         canvas = drawCorners(blockSize, canvas);
         canvas = drawTiming(startPoint, blockSize, canvas);
         canvas = drawMat(startPoint, blockSize, canvas);
-        saveValues = new SaveValues(getBlockSize(), getBlockWidth(), getBlockHeight());
-        saveValues.saveBarCode(this.getContext(), getColorList());
     }
 
 
     private Canvas drawMat(int startPoint, int blockSize, Canvas canvas) {
-        Paint[] paints = new Paint[]{colorWhite, colorGreen, colorRed, colorBlue};
-        Random random = new Random();
-        int countY = 0;
-
-        for (int y = blockSize * startPoint; y < canvas.getHeight() - (blockSize * (startPoint)); y += blockSize) {
-            countY++;
-            int countX = 0;
-            for (int x = blockSize * startPoint; x < canvas.getWidth() - (blockSize * (startPoint + 1)); x += blockSize) {
-                countX++;
-                Paint color = paints[random.nextInt(4)];
-                canvas.drawRect(x, y, x + blockSize, y + blockSize, color);
-                switch (color.getColor()) {
-                    case Color.WHITE:
-                        colorList.add("White");
-                        break;
-                    case Color.RED:
-                        colorList.add("Red");
-                        break;
-                    case Color.GREEN:
-                        colorList.add("Green");
-                        break;
-                    case Color.BLUE:
-                        colorList.add("Blue");
-                        break;
-                }
-
+        int startX = blockSize * 6;
+        int startY = blockSize * 6;
+        for (int i = 0; i < colorList.size(); i++) {
+            Paint paint = new Paint();
+            switch (colorList.get(i)) {
+                case "W":
+                    paint.setColor(Color.WHITE);
+                    break;
+                case "R":
+                    paint.setColor(Color.RED);
+                    break;
+                case "G":
+                    paint.setColor(Color.GREEN);
+                    break;
+                case "B":
+                    paint.setColor(Color.BLUE);
+                    break;
             }
-            blockWidth = countX;
+            canvas.drawRect(startX, startY, startX + blockSize, startY + blockSize, paint);
+            startX += blockSize;
+            if (startX >= getWidth() - (blockSize * 6)) {
+                startY += blockSize;
+                startX = blockSize * 6;
+            }
         }
-        blockHeight = countY;
         return canvas;
     }
 
-    public Integer getBlockHeight() {
-        return blockHeight;
-    }
-
-    public Integer getBlockWidth() {
-        return blockWidth;
+    public void setNewMat(Integer colorBack,String name) {
+        setBackgroundColor(colorBack);
+        saveValues = new SaveValues(getContext(),name);
+        Paint[] paints = new Paint[]{colorWhite, colorGreen, colorRed, colorBlue};
+        Random random = new Random();
+        colorList.clear();
+        for (int y = blockSize * 6; y < getHeight() - (blockSize * 7); y += blockSize) {
+            for (int x = blockSize * 6; x < getWidth() - (blockSize * 6); x += blockSize) {
+                Paint color = paints[random.nextInt(4)];
+                switch (color.getColor()) {
+                    case Color.WHITE:
+                        colorList.add("W");
+                        break;
+                    case Color.RED:
+                        colorList.add("R");
+                        break;
+                    case Color.GREEN:
+                        colorList.add("G");
+                        break;
+                    case Color.BLUE:
+                        colorList.add("B");
+                        break;
+                }
+                saveValues.saveBarCode(colorList.get(colorList.size() - 1));
+            }
+        }
+        saveValues.close();
+        invalidate();
     }
 
     private Canvas drawTiming(int startPoint, int blockSize, Canvas canvas) {
-        for (int i = blockSize * startPoint; i < canvas.getWidth() - blockSize * startPoint; i += blockSize * 2) {
-            canvas.drawRect(i, 2 * blockSize, i + blockSize, 3 * blockSize, colorBlack);
-            canvas.drawRect(i, getHeight() - 2 * blockSize, i + blockSize, getHeight() - (3 * blockSize), colorBlack);
+        for (int i = blockSize * startPoint; i < canvas.getWidth() - blockSize * (startPoint); i += blockSize * 2) {
+            canvas.drawRect(i, 0, i + blockSize, 6 * blockSize, colorBlack);
+            canvas.drawRect(i, getHeight() - 6 * blockSize, i + blockSize, getHeight(), colorBlack);
         }
 
         for (int i = blockSize * startPoint; i < canvas.getHeight() - blockSize * startPoint; i += blockSize * 2) {
-            canvas.drawRect(2 * blockSize, i + blockSize, 3 * blockSize, i, colorBlack);
-            canvas.drawRect(getWidth() - 2 * blockSize, i + blockSize, getWidth() - (3 * blockSize), i, colorBlack);
+            canvas.drawRect(0, i , 6 * blockSize, i+blockSize, colorBlack);
+            canvas.drawRect(getWidth() - 6 * blockSize, i , getWidth(), i+ blockSize, colorBlack);
         }
         return canvas;
     }
@@ -173,7 +195,17 @@ public class CobraView extends RelativeLayout {
         return colorList;
     }
 
+    public int getxC() {
+        return xC;
+    }
+
+    public int getyC() {
+        return yC;
+    }
+
     public Integer getBlockSize() {
         return blockSize;
     }
+
+
 }

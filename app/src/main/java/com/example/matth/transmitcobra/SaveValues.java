@@ -16,38 +16,48 @@ import java.util.Calendar;
  */
 
 public class SaveValues {
-    private int BlockSquare;
-    private int SquareWidth;
-    private int SquareHeight;
     private Calendar calendar;
     String filename = "";
     FileOutputStream outputStream;
+    OutputStreamWriter outputStreamWriter;
+    FileOutputStream fileOutputStream = null;
+    int count =-1;
 
-    public SaveValues(int BlockSize, int SquareWidth, int SquareHeight) {
-        this.BlockSquare = BlockSize;
-        this.SquareWidth = SquareWidth;
-        this.SquareHeight = SquareHeight;
+    public SaveValues( Context context,String name) {
+
         calendar =  Calendar.getInstance();
-        filename = "I_SENT_" + calendar.getTime().toString()+".txt";
-
+        filename = "I_SENT_" + name+".txt";
+        try {
+            fileOutputStream = new FileOutputStream(getAlbumStorageDir(context,filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        outputStreamWriter = new OutputStreamWriter(fileOutputStream);
     }
 
-    public void saveBarCode(Context context, ArrayList<String> colors) {
+    public void saveBarCode(String colors) {
         try {
+count++;
+  outputStreamWriter.append(count+":"+colors+"\n");
 
-FileOutputStream fileOutputStream = new FileOutputStream(getAlbumStorageDir(context,filename));
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-
-            String string = "";
-            for (int i = 0; i < colors.size(); i++) {
-                string += i + ":" + colors.get(i) + "\n";
-            }
-            outputStreamWriter.append(string);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+public void close(){
+    try {
+        outputStreamWriter.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    try {
+        fileOutputStream.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -66,7 +76,7 @@ FileOutputStream fileOutputStream = new FileOutputStream(getAlbumStorageDir(cont
     }
     public File getAlbumStorageDir(Context context, String albumName) throws IOException {
         // Get the directory for the app's private pictures directory.
-        File file = new File(context.getExternalFilesDir("CobraTransmitted"), albumName);
+        File file = new File(context.getExternalFilesDir("CobraSent"), albumName);
         if(!file.exists()){
             file.createNewFile();
         }
