@@ -41,26 +41,24 @@ public class MainActivity extends AppCompatActivity {
         private Handler handler;
         int count = 0;
         Integer color = Color.YELLOW;
-
         public Clock2(Handler handler) {
             this.handler = handler;
         }
-
         public void run() {
             if (count == 0) {
                 cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
-                handler.postDelayed(this, 10000);
+                handler.postDelayed(this, 5000);
                 count++;
-            } else if (count == 20) {
+            } else if (count == 50) {
                 cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
-            } else if (count <= 20) {
+            } else if (count <= 50) {
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
                     color = Color.YELLOW;
                 }
                 cobraView.setNewMat(color, "" + count);
-                handler.postDelayed(this, 3000);
+                handler.postDelayed(this, 250);
                 count++;
             }
         }
