@@ -3,6 +3,7 @@ package com.example.matth.transmitcobra;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,43 +22,44 @@ public class SaveValues {
     FileOutputStream outputStream;
     OutputStreamWriter outputStreamWriter;
     FileOutputStream fileOutputStream = null;
-    int count =-1;
+    int count = -1;
 
-    public SaveValues( Context context,String name) {
+    public SaveValues(Context context, String name) {
 
-        calendar =  Calendar.getInstance();
-        filename = "I_SENT_" + name+".txt";
+        calendar = Calendar.getInstance();
+        filename = "I_SENT_" + name + ".txt";
         try {
-            fileOutputStream = new FileOutputStream(getAlbumStorageDir(context,filename));
+            fileOutputStream = new FileOutputStream(getAlbumStorageDir(context, filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
         outputStreamWriter = new OutputStreamWriter(fileOutputStream);
     }
 
-    public void saveBarCode(String colors) {
-        try {
-count++;
-  outputStreamWriter.append(count+":"+colors+"\n");
+    public void saveBarCode(Context context, String colors) {
 
+        try {
+            outputStreamWriter.append((count++) + ":" + colors + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-public void close(){
-    try {
-        outputStreamWriter.close();
-    } catch (IOException e) {
-        e.printStackTrace();
+    public void close(Context context) {
+        try {
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
-    try {
-        fileOutputStream.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
+
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -74,10 +76,11 @@ public void close(){
         }
         return false;
     }
+
     public File getAlbumStorageDir(Context context, String albumName) throws IOException {
         // Get the directory for the app's private pictures directory.
         File file = new File(context.getExternalFilesDir("CobraSent"), albumName);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.createNewFile();
         }
         if (!file.mkdirs()) {
