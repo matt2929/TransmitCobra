@@ -22,7 +22,7 @@ public class SaveValues {
     FileOutputStream outputStream;
     OutputStreamWriter outputStreamWriter;
     FileOutputStream fileOutputStream = null;
-    int count = -1;
+    int count = 0;
 
     public SaveValues(Context context, String name) {
 

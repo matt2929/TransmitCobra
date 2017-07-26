@@ -14,7 +14,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     CobraView cobraView;
     Button startButton;
-
+    byte[] binStream = new byte[100000];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,19 +45,19 @@ public class MainActivity extends AppCompatActivity {
         }
         public void run() {
             if (count == 0) {
-                cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
+                cobraView.setNewMat(Color.rgb(255, 0, 255),false);
                 handler.postDelayed(this, 5000);
                 count++;
-            } else if (count == 10) {
-                cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
-            } else if (count <= 10) {
+            } else if (count == 6) {
+                cobraView.setNewMat(Color.rgb(255, 0, 255),true);
+            } else if (count <= 6) {
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
                     color = Color.YELLOW;
                 }
-                cobraView.setNewMat(color, "" + count);
-                handler.postDelayed(this, 300);
+                cobraView.setNewMat(color,false);
+                handler.postDelayed(this, 1000);
                 count++;
             }
         }
