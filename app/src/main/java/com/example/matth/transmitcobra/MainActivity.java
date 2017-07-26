@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
                 Clock2 clock2 = new Clock2(handler);
                 handler.post(clock2);
                 startButton.setVisibility(View.GONE);
-
             }
         });
     }
@@ -49,16 +48,16 @@ public class MainActivity extends AppCompatActivity {
                 cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
                 handler.postDelayed(this, 5000);
                 count++;
-            } else if (count == 50) {
+            } else if (count == 10) {
                 cobraView.setNewMat(Color.rgb(255, 0, 255), "" + count);
-            } else if (count <= 50) {
+            } else if (count <= 10) {
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
                     color = Color.YELLOW;
                 }
                 cobraView.setNewMat(color, "" + count);
-                handler.postDelayed(this, 250);
+                handler.postDelayed(this, 300);
                 count++;
             }
         }
