@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -14,7 +15,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     CobraView cobraView;
     Button startButton;
-    byte[] binStream = new byte[100000];
+    int frames = 6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         cobraView = (CobraView) findViewById(R.id.cobra);
+        cobraView.setFrames(frames);
         startButton = (Button) findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
 
@@ -48,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 cobraView.setNewMat(Color.rgb(255, 0, 255),false);
                 handler.postDelayed(this, 5000);
                 count++;
-            } else if (count == 6) {
+            } else if (count == (frames-1)){
                 cobraView.setNewMat(Color.rgb(255, 0, 255),true);
-            } else if (count <= 6) {
+            } else if (count < frames) {
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(this, 1000);
                 count++;
             }
+            Log.e("count",""+count);
         }
     }
 }

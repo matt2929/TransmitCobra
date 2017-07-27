@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,12 +37,13 @@ public class SaveValues {
         outputStreamWriter = new OutputStreamWriter(fileOutputStream);
     }
 
-    public void saveBarCode(Context context, String colors) {
+    public void saveBarCode(Context context,byte[] colors) {
 
         try {
-            outputStreamWriter.append((count++) + ":" + colors + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(getAlbumStorageDir(context, filename)));
+            bos.write(colors);
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
 
