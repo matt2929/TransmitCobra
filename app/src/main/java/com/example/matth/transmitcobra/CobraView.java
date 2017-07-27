@@ -29,8 +29,9 @@ public class CobraView extends RelativeLayout {
    int width = 91;
     int height = 171;
     int frames;
+    boolean last =false;
     byte[] binStream;
-
+    int count=0;
     public void setFrames(int i){
         frames=i;
     }
@@ -78,6 +79,7 @@ public class CobraView extends RelativeLayout {
     private Canvas drawMat(int startPoint, int blockSize, Canvas canvas) {
         if (binStream==null){
             binStream = new byte[width*height*frames];
+            Log.e("null array","null");
 
         }
         int startX = blockSize * 6;
@@ -86,23 +88,23 @@ public class CobraView extends RelativeLayout {
             Paint paint = new Paint();
             switch (colorList.get(i)) {
                 case "W":
-                    binStream[i] = (int) 0;
+                    binStream[count] = (int) 0;
                     paint.setColor(Color.WHITE);
                     break;
                 case "R":
-                    binStream[i] = (int) 1;
+                    binStream[count] = (int) 1;
                     paint.setColor(Color.RED);
                     break;
                 case "G":
-                    binStream[i] = (int) 2;
+                    binStream[count] = (int) 2;
                     paint.setColor(Color.GREEN);
                     break;
                 case "B":
-                    binStream[i] = (int) 3;
+                    binStream[count] = (int) 3;
                     paint.setColor(Color.BLUE);
                     break;
             }
-
+            count++;
             canvas.drawRect(startX, startY, startX + blockSize, startY + blockSize, paint);
             startX += blockSize;
             if (startX >= getWidth() - (blockSize * 6)) {
@@ -110,10 +112,15 @@ public class CobraView extends RelativeLayout {
                 startX = blockSize * 6;
             }
         }
+        if (last) {
+            saveValues.saveBarCode(getContext(),binStream);
+            saveValues.close(getContext());
+        }
         return canvas;
     }
 
     public void setNewMat(Integer colorBack, boolean last) {
+        this.last=last;
         setBackgroundColor(colorBack);
         Paint[] paints = new Paint[]{colorWhite, colorGreen, colorRed, colorBlue};
         Random random = new Random();
@@ -144,10 +151,7 @@ public class CobraView extends RelativeLayout {
             }
         }
         Log.e("widht&height", "w:" + widthCount);
-        if (last) {
-            saveValues.saveBarCode(getContext(),binStream);
-            saveValues.close(getContext());
-        }
+
         invalidate();
     }
 
