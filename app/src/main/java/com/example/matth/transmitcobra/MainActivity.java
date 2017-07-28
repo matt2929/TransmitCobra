@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,7 +14,9 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     CobraView cobraView;
     Button startButton;
-    int frames = 6;
+    int frames = 50;
+    Long clockTime = System.currentTimeMillis();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                clockTime = System.currentTimeMillis();
                 Handler handler = new Handler();
                 Clock2 clock2 = new Clock2(handler);
                 handler.post(clock2);
@@ -41,28 +43,44 @@ public class MainActivity extends AppCompatActivity {
     class Clock2 implements Runnable {
         private Handler handler;
         int count = 0;
+        boolean running = true;
+        long clockDelay = 5;
         Integer color = Color.YELLOW;
+        long frameDelay = 3000;
+
         public Clock2(Handler handler) {
             this.handler = handler;
         }
+
         public void run() {
+
             if (count == 0) {
-                cobraView.setNewMat(Color.rgb(255, 0, 255),false);
-                handler.postDelayed(this, 5000);
+                cobraView.setNewMat(Color.rgb(255, 0, 255), false);
                 count++;
-            } else if (count == (frames-1)){
-                cobraView.setNewMat(Color.rgb(255, 0, 255),true);
-            } else if (count < frames) {
+                clockTime = System.currentTimeMillis();
+            } else if ((Math.abs(clockTime - System.currentTimeMillis()) > frameDelay) && count == (frames - 1)) {
+                clockTime = System.currentTimeMillis();
+                cobraView.setNewMat(Color.rgb(255, 0, 255), true);
+                running = false;
+                Log.e("clockDelay draw", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+            } else if ((Math.abs(clockTime - System.currentTimeMillis()) > frameDelay) && count < frames && count != 0) {
+                frameDelay =300     ;
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
                     color = Color.YELLOW;
                 }
-                cobraView.setNewMat(color,false);
-                handler.postDelayed(this, 1000);
+                clockTime = System.currentTimeMillis();
+                cobraView.setNewMat(color, false);
+                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+                clockTime = System.currentTimeMillis();
                 count++;
             }
-            Log.e("count",""+count);
+            if (running) {
+                handler.post(this);
+                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+
+            }
         }
     }
 }

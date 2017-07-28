@@ -121,6 +121,7 @@ public class CobraView extends RelativeLayout {
 
     public void setNewMat(Integer colorBack, boolean last) {
         this.last=last;
+
         setBackgroundColor(colorBack);
         Paint[] paints = new Paint[]{colorWhite, colorGreen, colorRed, colorBlue};
         Random random = new Random();
