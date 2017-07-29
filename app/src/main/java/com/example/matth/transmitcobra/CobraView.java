@@ -28,7 +28,7 @@ public class CobraView extends RelativeLayout {
     int yC = 0;
    int width = 91;
     int height = 171;
-    int frames;
+    int frames=50;
     boolean last =false;
     byte[] binStream;
     int count=0;
@@ -152,7 +152,6 @@ public class CobraView extends RelativeLayout {
             }
         }
         Log.e("widht&height", "w:" + widthCount);
-
         invalidate();
     }
 

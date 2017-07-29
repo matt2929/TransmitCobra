@@ -57,29 +57,25 @@ public class MainActivity extends AppCompatActivity {
             if (count == 0) {
                 cobraView.setNewMat(Color.rgb(255, 0, 255), false);
                 count++;
-                clockTime = System.currentTimeMillis();
             } else if ((Math.abs(clockTime - System.currentTimeMillis()) > frameDelay) && count == (frames - 1)) {
-                clockTime = System.currentTimeMillis();
                 cobraView.setNewMat(Color.rgb(255, 0, 255), true);
                 running = false;
-                Log.e("clockDelay draw", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+                clockTime=System.currentTimeMillis();
             } else if ((Math.abs(clockTime - System.currentTimeMillis()) > frameDelay) && count < frames && count != 0) {
-                frameDelay =300     ;
+                frameDelay =10    ;
                 if (color == Color.YELLOW) {
                     color = Color.WHITE;
                 } else {
                     color = Color.YELLOW;
                 }
-                clockTime = System.currentTimeMillis();
                 cobraView.setNewMat(color, false);
-                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
-                clockTime = System.currentTimeMillis();
                 count++;
+                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
+                clockTime=System.currentTimeMillis();
             }
             if (running) {
                 handler.post(this);
-                Log.e("clockDelay", "[" + Math.abs(clockTime - System.currentTimeMillis()) + "]");
-
             }
         }
     }
